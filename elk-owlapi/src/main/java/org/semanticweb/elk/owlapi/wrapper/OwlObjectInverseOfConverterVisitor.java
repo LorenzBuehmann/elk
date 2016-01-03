@@ -24,11 +24,9 @@ package org.semanticweb.elk.owlapi.wrapper;
 
 import org.semanticweb.elk.owl.interfaces.ElkObjectInverseOf;
 import org.semanticweb.elk.owl.interfaces.ElkObjectPropertyExpression;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLObjectInverseOf;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
-import org.semanticweb.owlapi.model.OWLPropertyExpressionVisitorEx;
+import org.semanticweb.owlapi.model.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * A visitor class for converting the inverse of the given
@@ -72,6 +70,15 @@ public class OwlObjectInverseOfConverterVisitor implements
 				+ property.getClass().getSimpleName()
 				+ " cannot be converted to "
 				+ ElkObjectPropertyExpression.class.getSimpleName());
+	}
+
+	@Nonnull
+	@Override
+	public ElkObjectPropertyExpression visit(@Nonnull OWLAnnotationProperty property) {
+		throw new IllegalArgumentException("invers of "
+												   + property.getClass().getSimpleName()
+												   + " cannot be converted to "
+												   + ElkObjectPropertyExpression.class.getSimpleName());
 	}
 
 }

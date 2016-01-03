@@ -25,20 +25,6 @@ package org.semanticweb.elk.owlapi;
  * #L%
  */
 
-import static org.junit.Assume.assumeTrue;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,11 +36,7 @@ import org.semanticweb.elk.reasoner.ClassTaxonomyTestOutput;
 import org.semanticweb.elk.reasoner.Reasoner;
 import org.semanticweb.elk.reasoner.ReasoningTestManifest;
 import org.semanticweb.elk.reasoner.TaxonomyDiffManifest;
-import org.semanticweb.elk.reasoner.incremental.IncrementalChange;
-import org.semanticweb.elk.reasoner.incremental.IncrementalClassificationCorrectnessTest;
-import org.semanticweb.elk.reasoner.incremental.OnOffVector;
-import org.semanticweb.elk.reasoner.incremental.RandomWalkIncrementalClassificationRunner;
-import org.semanticweb.elk.reasoner.incremental.RandomWalkRunnerIO;
+import org.semanticweb.elk.reasoner.incremental.*;
 import org.semanticweb.elk.reasoner.stages.PostProcessingStageExecutor;
 import org.semanticweb.elk.reasoner.stages.SimpleStageExecutor;
 import org.semanticweb.elk.testing.ConfigurationUtils;
@@ -70,14 +52,17 @@ import org.semanticweb.elk.util.logging.LogLevel;
 import org.semanticweb.elk.util.logging.LoggerWrap;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLOntologyCreationIOException;
-import org.semanticweb.owlapi.model.AxiomType;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
+
+import static org.junit.Assume.assumeTrue;
 
 /**
  * 
@@ -233,13 +218,13 @@ public class OWLAPIRandomWalkIncrementalClassificationTest {
 			for (OWLAxiom axiom : change.getDeletions()) {
 				LOGGER_.trace("removing: {}", axiom);
 
-				changes.addAll(manager.removeAxiom(ontology_, axiom));
+				changes.add(new RemoveAxiom(ontology_, axiom));
 			}
 			
 			for (OWLAxiom axiom : change.getAdditions()) {
 				LOGGER_.trace("adding: {}", axiom);
 
-				changes.addAll(manager.addAxiom(ontology_, axiom));
+				changes.add(new AddAxiom(ontology_, axiom));
 			}
 			
 			manager.applyChanges(changes);
@@ -259,12 +244,12 @@ public class OWLAPIRandomWalkIncrementalClassificationTest {
 			
 			for (OWLAxiom axiom : change.getDeletions()) {
 				LOGGER_.trace("adding: {}", axiom);
-				changes.addAll(manager.addAxiom(ontology_, axiom));
+				changes.add(new AddAxiom(ontology_, axiom));
 			}
 			
 			for (OWLAxiom axiom : change.getAdditions()) {
 				LOGGER_.trace("deleting: {}", axiom);
-				changes.addAll(manager.removeAxiom(ontology_, axiom));
+				changes.add(new RemoveAxiom(ontology_, axiom));
 			}
 
 			manager.applyChanges(changes);

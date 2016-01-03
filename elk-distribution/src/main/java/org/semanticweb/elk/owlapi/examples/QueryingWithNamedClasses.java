@@ -22,21 +22,13 @@
  */
 package org.semanticweb.elk.owlapi.examples;
 
-import java.util.Set;
-
-import org.coode.owlapi.manchesterowlsyntax.ManchesterOWLSyntaxEditorParser;
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
+import org.semanticweb.owlapi.OWLAPIConfigProvider;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.expression.OWLEntityChecker;
-import org.semanticweb.owlapi.expression.ParserException;
 import org.semanticweb.owlapi.expression.ShortFormEntityChecker;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.manchestersyntax.parser.ManchesterOWLSyntaxParserImpl;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -45,6 +37,9 @@ import org.semanticweb.owlapi.util.BidirectionalShortFormProvider;
 import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
 import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
+import org.semanticweb.owlapi.util.mansyntax.ManchesterOWLSyntaxParser;
+
+import java.util.Set;
 
 /**
  * Illustrates querying the ontology for the list of subclasses of a named
@@ -87,8 +82,7 @@ public class QueryingWithNamedClasses {
 				importsClosure, shortFormProvider);
 	}
 
-	public static void main(String[] args) throws OWLOntologyCreationException,
-			ParserException {
+	public static void main(String[] args) throws OWLOntologyCreationException {
 		// Creation of a new Querier = Motor running the query
 		System.out.println("Initialization of the querier...");
 
@@ -106,8 +100,7 @@ public class QueryingWithNamedClasses {
 		}
 	}
 
-	public Set<OWLClass> getSubClasses(String expression)
-			throws ParserException {
+	public Set<OWLClass> getSubClasses(String expression) {
 		// Convert the class expression (string) into an OWL class expression,
 		// which is used to retrieved the named class.
 		// In principle, this allows for parsing arbitrary class expressions in
@@ -129,15 +122,14 @@ public class QueryingWithNamedClasses {
 		return subClasses.getFlattened();
 	}
 
-	public OWLClassExpression parseClassExpression(String expression)
-			throws ParserException {
+	public OWLClassExpression parseClassExpression(String expression) {
 		// Inspired from:
 		// http://owlapi.svn.sourceforge.net/viewvc/owlapi/v3/trunk/examples/src/main/java/org/coode/owlapi/examples/dlquery/DLQueryParser.java?revision=1991&view=markup
 		// Convert the class expression (string) into an OWL class expression
 		OWLDataFactory dataFactory = ontology.getOWLOntologyManager()
 				.getOWLDataFactory();
-		ManchesterOWLSyntaxEditorParser parser = new ManchesterOWLSyntaxEditorParser(
-				dataFactory, expression);
+		ManchesterOWLSyntaxParser parser = new ManchesterOWLSyntaxParserImpl(new OWLAPIConfigProvider(), dataFactory);
+
 		OWLEntityChecker entityChecker = new ShortFormEntityChecker(mapper);
 
 		parser.setDefaultOntology(ontology);

@@ -82,10 +82,10 @@ public class OWLAPIIncrementalClassificationCorrectnessTest extends
 		for (OWLAxiom axiom : changes) {
 			switch (type) {
 			case ADD:
-				ontologyChanges.addAll(manager.addAxiom(testOntology_, axiom));
+				manager.addAxiom(testOntology_, axiom);
 				break;
 			case DELETE:
-				ontologyChanges.addAll(manager.removeAxiom(testOntology_, axiom));
+				manager.removeAxiom(testOntology_, axiom);
 				break;
 			}
 		}

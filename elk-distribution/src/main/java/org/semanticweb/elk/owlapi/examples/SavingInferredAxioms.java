@@ -22,19 +22,10 @@
  */
 package org.semanticweb.elk.owlapi.examples;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.OWLFunctionalSyntaxOntologyFormat;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.formats.FunctionalSyntaxDocumentFormat;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
@@ -42,6 +33,10 @@ import org.semanticweb.owlapi.util.InferredAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredEquivalentClassAxiomGenerator;
 import org.semanticweb.owlapi.util.InferredOntologyGenerator;
 import org.semanticweb.owlapi.util.InferredSubClassAxiomGenerator;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This example shows how to classify an ontology and save the resulting
@@ -82,11 +77,11 @@ public class SavingInferredAxioms {
 		OWLOntology infOnt = outputOntologyManager.createOntology();
 		InferredOntologyGenerator iog = new InferredOntologyGenerator(reasoner,
 				gens);
-		iog.fillOntology(outputOntologyManager, infOnt);
+		iog.fillOntology(outputOntologyManager.getOWLDataFactory(), infOnt);
 
 		// Save the inferred ontology.
 		outputOntologyManager.saveOntology(infOnt,
-				new OWLFunctionalSyntaxOntologyFormat(),
+				new FunctionalSyntaxDocumentFormat(),
 				IRI.create((new File("path-to-output").toURI())));
 
 		// Terminate the worker threads used by the reasoner.
